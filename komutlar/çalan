@@ -1,0 +1,72 @@
+function progressBar(percent) {
+  let num = Math.floor(percent * 12);
+  if (num === 1) {
+    return "▬▬▬🔘▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬";
+  } else if (num === 2) {
+    return "▬▬▬▬▬🔘▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬";
+  } else if (num === 3) {
+    return "▬▬▬▬▬▬▬▬🔘▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬";
+  } else if (num === 4) {
+    return "▬▬▬▬▬▬▬▬▬▬▬🔘▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬";
+  } else if (num === 5) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬";
+  } else if (num === 6) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘▬▬▬▬▬▬▬▬▬▬▬▬";
+  } else if (num === 7) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘▬▬▬▬▬▬▬▬▬▬";
+  } else if (num === 8) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘▬▬▬▬▬▬▬▬";
+  } else if (num === 9) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘▬▬▬▬▬▬";
+  } else if (num === 10) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘▬▬▬▬";
+  } else if (num === 11) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘▬▬";
+  } else if (num === 12) {
+    return "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬🔘";
+  } else {
+    return "🔘▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬";
+  }
+}
+
+exports.run = async (client, message, argüman) => {
+  const Discord = require("discord.js");
+  const serverQueue = client.müzik.get(message.guild.id);
+  const duration =
+    serverQueue.songs[0].durationm * 60000 +
+    (serverQueue.songs[0].durations % 60000) * 1000;
+  const persentase = serverQueue.connection.dispatcher.time / duration;
+  if (!serverQueue)
+    return message.channel.send("**Şu an çalınan bir müzik bulunmuyor.**");
+  return message.channel.send(
+    new Discord.RichEmbed()
+      .setAuthor("Çalınan müzik", message.author.displayAvatarURL)
+      .setDescription(
+        `[${serverQueue.songs[0].title}](https://www.youtube.com/watch?v=${
+          serverQueue.songs[0].id
+        })\n\n\`\`[${progressBar(persentase)}]\`\``
+      )
+      .setThumbnail(serverQueue.songs[0].image)
+      .addField("Kanal", serverQueue.songs[0].channel, true)
+      .addField(
+        "Zaman",
+        serverQueue.songs[0].durationm + ":" + serverQueue.songs[0].durations,
+        true
+      )
+      .addField("Ses", serverQueue.volume + "%", true)
+      .addField("Açan kişi", serverQueue.songs[0].author, true)
+  );
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["oynayan", "çalınan", "np"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "çalan",
+  kategori: "Müzik",
+  açıklama: "Çalınan şarkının bilgilerini gösterir.",
+  kullanım: "çalan"
+};

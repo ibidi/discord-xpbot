@@ -1,0 +1,71 @@
+exports.run = async (client, message, argüman) => {
+  const serverQueue = client.müzik.get(message.guild.id);
+  let andax = 0;
+  if (!message.member.voiceChannel)
+    return message.channel.send("**Lütfen sesli bir kanala katılınız.**");
+  if (!message.member.hasPermission("MUTE_MEMBERS"))
+    return message.channel.send(
+      "**Tekrarlamak için gerekli yetkiyi karşılamıyorsun.**"
+    );
+  if (!serverQueue)
+    return message.channel.send("**Müzik listesi boş gibi görünüyor.**");
+  if (serverQueue.songs.length >= 10)
+    return message.channel.send(
+      "Bir sunucuda en fazla listede 10 şarkı bulunmalıdır."
+    );
+  if (!argüman[0]) {
+    if (serverQueue.songs.length + serverQueue.songs.length >= 10)
+      return message.channel.send(
+        "Bir sunucuda en fazla listede 10 şarkı bulunmalıdır."
+      );
+    message.channel.send(
+      `\`${serverQueue.songs.length}\` **adet müzik listeye eklendi** 👍`
+    );
+    const songs = serverQueue.songs.map(sarkilar => {
+      serverQueue.songs.push(sarkilar);
+    });
+  }
+  if (argüman[0]) {
+    const neblm = Math.round(argüman[0]);
+    if (isNaN(neblm))
+      return message.channel.send(`**Girilen müzik numarası geçersiz.**`);
+    if (neblm > serverQueue.songs.length)
+      return message.channel.send(`**Girilen müzik numarası geçersiz.**`);
+    if (neblm < 1)
+      return message.channel.send(`**Girilen müzik numarası geçersiz.**`);
+    const sarki = {
+      id: serverQueue.songs[neblm - 1].id,
+      title: serverQueue.songs[neblm - 1].title,
+      author: serverQueue.songs[neblm - 1].author,
+      image: serverQueue.songs[neblm - 1].image,
+      channel: serverQueue.songs[neblm - 1].channel,
+      içerik: serverQueue.songs[neblm - 1].içerik,
+      url: serverQueue.songs[neblm - 1].url,
+      durationh: serverQueue.songs[neblm - 1].durationh,
+      durationm: serverQueue.songs[neblm - 1].durationm,
+      durations: serverQueue.songs[neblm - 1].durations,
+      views: serverQueue.songs[neblm - 1].views
+    };
+    if (serverQueue.songs.length >= 10)
+      return message.channel.send(
+        "Bir sunucuda en fazla listede 10 şarkı bulunmalıdır."
+      );
+    serverQueue.songs.push(sarki);
+    message.channel.send(
+      `👍 **Sıraya eklendi** \`${sarki.title}\` - ${sarki.author}!`
+    );
+  }
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["replay", "tekrarla"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "tekrarla",
+  kategori: "Müzik",
+  açıklama: "Belirttiğiniz müziği tekrarlar.",
+  kullanım: "tekrarla <sayı>"
+};

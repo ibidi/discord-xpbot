@@ -1,0 +1,25 @@
+const db = require("quick.db")
+const Discord = require("discord.js")
+
+exports.run = async (client, message, argüman) => {
+  const embed = new Discord.RichEmbed()
+  .setColor(client.ayarlar.renk)
+  .setAuthor(`${client.user.username}`, client.user.avatarURL)
+  .setDescription(`${client.user.username}, **${await client.fetchApplication().then(x=>x.owner.tag)}** tarafından özenle yazılmış olup sunucunuzu kolay bir şekilde yönetmenize yardımcı olur. Bunun yanı sıra eğlence komutları ile sizle iyi bir vakit geçirmeye çalışır. `)
+  .addField("Botu Davet Et", `[Tıkla](${await client.generateInvite(2146958591)})`, true)
+  .addField("Destek Sunucusu", "[Tıkla](https://discord.gg/rHnySnr)", true)
+  message.channel.send(embed)
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ['bilgi','destek'],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "davet",
+  kategori: "Kullanıcı",
+  açıklama: "Botun davet linkini verir.",
+  kullanım: ""
+};

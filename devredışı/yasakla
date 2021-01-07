@@ -1,0 +1,75 @@
+const Discord = require("discord.js");
+const zaman = require("moment-timezone");
+zaman.locale("tr");
+exports.run = async (client, message, argüman) => {
+  let uwu = false;
+  if (!argüman[0])
+    return message.channel.send("Yasaklanacak bir üye belirtmelisin.");
+  var msg = message
+  var args = argüman
+  var user = msg.mentions.members.first() || msg.guild.members.find(r=>r.id===args[0]) || msg.guild.members.find(r=>r.user.username===args.join(" ")) || msg.guild.members.find(s => s.user.username.match(new RegExp(`${args.slice(0).join(" ")}`, 'g')))
+  let kişi = user;
+  let sebep = argüman.slice(1).join(" ");
+  if (!sebep) sebep = "Bir sebep gir.";
+  if (!kişi) return message.channel.send("Böyle bir kullanıcı bulunamadı.");
+  let modkanal = await client.veri.fetch(`${message.guild.id}.yetkiliDefter`);
+  if (kişi.hasPermission("KICK_MEMBERS"))
+    return message.channel.send(
+      "Yetkilileri ve rolümün üstündeki üyeleri yasaklayamam."
+    );
+  if (!kişi)
+    return message.channel.send(`Sunucudan yasaklanacak kişiyi belirtmelisiniz.`);
+  while (!uwu) {
+    message.channel.send(
+      `${kişi.user.tag} adlı kişiyi yasaklamak istediğinden emin misin? (__e__vet | __h__ayır)`,
+    );
+    const response = await message.channel.awaitMessages(
+      kicked => kicked.author.id === message.author.id,
+      { max: 1, time: 10000 }
+    );
+    if (!response.size) {
+      await message.channel.send("Tamam, yasaklamayı iptal ettim.");
+      break;
+    }
+    const choice = response.first().content;
+    if (choice.toLowerCase() == "hayır" || choice.toLowerCase() == "h")
+      return message.channel.send("Tamam, yasaklamayı iptal ettim.");
+    if (
+      choice.toLowerCase() !== "evet" &&
+      choice.toLowerCase() !== "hayır" &&
+      choice.toLowerCase() !== "h" &&
+      choice.toLowerCase() !== "e"
+    ) {
+      message.channel.send(
+        "Sadece __e__vet veya __h__ayır terimlerini kullanın."
+      );
+    }
+    if (choice.toLowerCase() == "evet" || choice.toLowerCase() == "e") {
+      uwu = true;
+    }
+  }
+  if (uwu) {
+    kişi
+      .ban(`${message.author.tag} adlı yetkili tarafından yasaklandı.`)
+      .then(kicked => {
+        message.channel.send(`${kişi.user.tag} sunucudan yasaklandı.`);
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  } else return console.log("Hata var.");
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["ban"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "yasakla",
+  yetki: "BAN_MEMBERS",
+  kategori: "Moderasyon",
+  açıklama: "Belirtilen kullanıcıyı sunucudan yasaklarsınız.",
+  kullanım: "yasakla <kullanıcı> <sebep>"
+};

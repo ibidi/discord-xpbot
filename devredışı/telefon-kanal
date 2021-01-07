@@ -1,0 +1,30 @@
+const db = require('quick.db')
+
+exports.run = async (client, message, args) => {
+    let prefix = await db.fetch(`${message.guild.id}.prefix`) || client.ayarlar.prefix
+  let kanal = message.mentions.channels.first() || message.guild.channels.find(s => s.name.match(new RegExp(args.slice(0).join("-"), 'g')))
+    if(!kanal) {
+        return message.channel.send(`Lütfen bir kanal girin.`)
+    }
+    if(db.has(`${message.guild.id}.telefonKanal`)) {
+        if(kanal.id === db.fetch(`${message.guild.id}.telefonKanal`))
+        return message.channel.send(`Telefon çağrılarının gönderileceği kanal zaten <#${kanal.id}> olarak ayarlı.`)
+    }
+    db.set(`${message.guild.id}.telefonKanal`, kanal.id)
+    message.channel.send(`<:evet:702786528820068352> Telefon çağrılarının gönderileceği kanal <#${kanal.id}> olarak ayarlanmıştır.`)
+
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["telefonkanal"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "telefon-kanal",
+  yetki: "MANAGE_CHANNELS",
+  kategori: "Ayar",
+  açıklama: "Telefon bildirimlerinin gideceği kanalı ayarlarsınız.",
+  kullanım: "telefon-kanal [kanal]"
+};

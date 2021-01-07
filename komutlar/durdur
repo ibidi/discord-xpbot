@@ -1,0 +1,22 @@
+exports.run = async (client, message, argüman) => {
+  const serverQueue = client.müzik.get(message.guild.id);
+  if (serverQueue && serverQueue.playing) {
+    serverQueue.playing = false;
+    serverQueue.connection.dispatcher.pause();
+    return message.channel.send(`***Durduruldu*** ⏸`)
+  }
+  return message.channel.send('**Şarkı zaten durdurulmuş/oynamıyor.**');
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["stop", "dur", "durdur"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "durdur",
+  kategori: "Müzik",
+  açıklama: "Çalan müziği durdurur.",
+  kullanım: "durdur"
+};

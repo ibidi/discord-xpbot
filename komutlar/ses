@@ -1,0 +1,37 @@
+exports.run = async (client, message, argüman) => {
+  const serverQueue = client.müzik.get(message.guild.id);
+  if (!message.member.voiceChannel)
+    return message.channel.send("**Lütfen sesli bir kanala katılınız.**");
+  if (!message.member.hasPermission("MUTE_MEMBERS"))
+    return message.channel.send(
+      "**Ses seviyesini değiştirmek için gerekli yetkiyi karşılamıyorsun.**"
+    );
+  if (!serverQueue)
+    return message.channel.send("**Müzik listesi boş gibi görünüyor.**");
+  if (Math.round(argüman[0]) > 10)
+    return message.channel.send("**Ses seviyesi 10'dan fazla olamaz.**");
+  if (!argüman[0])
+    return message.channel.send(
+      `***Şu anki ses seviyesi:*** ` + "`" + `${serverQueue.volume}` + "`"
+    );
+  serverQueue.volume = Math.round(argüman[0]);
+  serverQueue.connection.dispatcher.setVolumeLogarithmic(
+    Math.round(argüman[0]) / 5
+  );
+  return message.channel.send(
+    `***Ayarlanan ses:*** ` + "`" + `${Math.round(argüman[0])}` + "`"
+  );
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["volume", "ses"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "ses",
+  kategori: "Müzik",
+  açıklama: "Ses seviyesini belirlersiniz.",
+  kullanım: "ses <sayı>"
+};

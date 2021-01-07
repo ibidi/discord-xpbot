@@ -1,0 +1,225 @@
+const Discord = require('discord.js');
+const request = require('node-superfetch');
+const jimp = require('jimp');
+const { stripIndents } = require('common-tags');
+const snekfetch = require("snekfetch");
+const Canvas = require('canvas')
+exports.run = async (client, msg, args) => {
+  
+  const db = require("quick.db");
+  var user = msg.mentions.members.first() || msg.guild.members.find(r=>r.id===args[0]) || msg.guild.members.find(r=>r.user.username===args.join(" ")) || msg.guild.members.find(s => s.user.username.match(new RegExp(`${args.slice(0).join(" ")}`, 'g')))
+  if(!args[0] || !user) { var user = msg.author }
+  const member = msg.guild.members.get(user.id);
+const message = msg;
+  if(member.user.bot) return msg.channel.send("Botların profilini görüntüleyemem.")
+  if(db.has(msg.guild.id+".xpRole") === true) {
+  let x = db.fetch(user.id+"."+msg.guild.id+".rank");
+  let y = Object.keys(db.fetch(msg.guild.id+".xpRole")).sort((a, b) => db.fetch(msg.guild.id+".xpRole."+b) - db.fetch(msg.guild.id+".xpRole."+b))
+let z = y.slice(y.findIndex(f => f === x)+1);
+let a = z.reverse();
+let i = db.fetch(msg.guild.id+".xpRole."+a.slice(a.length-1)[0])
+if(i > 0 === false) {
+var xp2 = db.fetch(user.id+"."+msg.guild.id+".xpp")
+} else {
+var xp2 = `${i}`
+}
+if(xp2 === db.fetch(user.id+"."+msg.guild.id+".xpp") === true) {
+var all = xp2
+}
+} else {
+  var xp2 = db.fetch(user.id+"."+msg.guild.id+".xpp")
+  var all = xp2
+}
+  
+  var sira = ''
+	const sorted = message.guild.members.filter(m=>!m.user.bot).array().sort((a, b) => { return (db.fetch(`${b.user.id}.${msg.guild.id}.xpp`) || 0) - (db.fetch(`${a.user.id}.${msg.guild.id}.xpp`) || 0) });
+	const top10 = sorted.splice(0, message.guild.members.size)
+	const mappedID = top10.map(s => s.user.id);
+	for(var s = 0; s < message.guild.members.size; s++) {
+		if(mappedID[s] === user.id) {
+			sira += `${s+1}   `
+		}
+  }
+  
+      msg.channel.startTyping();
+  var allxp = Object.keys(db.fetch(user.id)).filter(r=>r!=="rozetler"&&r!=="moneyDurumA"&&r!=="profil"&&r!=="repDurum"&&r!=="profilP"&&r!=="arkaplanlar").map(x => db.fetch(user.id+"."+x+".xpp")).reduce((y , z) => y + z)
+  const rank = db.fetch(user.id+"."+msg.guild.id+".rank") || "Bilinmiyor"
+  const rankk = msg.guild.roles.find(r=>r.id===rank) || {id:"Bilinmiyor"}
+   const snekfetch = require('snekfetch')
+  const Canvas = require('canvas')
+  var canvas = Canvas.createCanvas(400, 400);
+  const ctx = canvas.getContext('2d');
+  var resim = await db.fetch(`profilP_${user.id}`)  
+  if(!resim) {
+    resim = "https://tatsu.gg/images/backgrounds/profile/opulus_wallhaven_others-1_bg.png"
+  }
+  const {body: downloadedImageBuffer} = await snekfetch.get(resim);
+    const background = await Canvas.loadImage( downloadedImageBuffer );
+  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+  const {body: dclogo} = await snekfetch.get("https://icon-library.net/images/discord-icon-colors/discord-icon-colors-26.jpg");
+  //const {body: dclogo} = await snekfetch.get("https://cdn.discordapp.com/attachments/647909213095329803/658305165887012882/658291818089152525.png")
+    const dclogoo = await Canvas.loadImage( dclogo );
+  const {body: konusmabalon} = await snekfetch.get("https://discordapp.com/assets/f2d2183f4b21d53a9e0885fc78d9c766.svg");
+    const konusmabalonu = await Canvas.loadImage( konusmabalon );
+
+  /* ctx.beginPath();
+  ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.clip(); */
+
+  const { body: buffer } = await snekfetch.get(member.user.displayAvatarURL);
+  const avatar = await Canvas.loadImage(buffer);
+    const path = require('path')
+  ctx.beginPath();
+  ctx.globalAlpha = 0.75
+  ctx.fillStyle = "#2a2c32";
+  ctx.strokeStyle = "black";
+  ctx.fillRect(10, 143, 370, 44);
+  ctx.stroke();
+  //Canvas.registerFont('BebasNeueBold.ttf', { family: 'Bebas' })
+  ctx.globalAlpha = 1
+  ctx.font=`bold 18px Arial`;
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillText(`${member.user.username}#${member.user.discriminator}`, 160, 164);
+  ctx.drawImage(dclogoo, 137, 144, 25, 25);
+  ctx.beginPath();
+  ctx.globalAlpha = 0.30
+  ctx.fillStyle = "black";
+  ctx.fillRect(10, 185, 130, 200);
+  ctx.globalAlpha = 1
+  ctx.fillStyle = "#7289DA";
+  ctx.fillRect(10, 185, 130, 44);
+  ctx.globalAlpha = 1
+  ctx.fillStyle = "#FFF";
+  ctx.globalAlpha = 0.70
+  ctx.fillRect(140, 186, 240, 200);
+  ctx.globalAlpha = 1
+  ctx.font=`bold 19px Arial`;
+  ctx.textAlign = "center";
+  ctx.fillText(`${db.fetch(member.id+".profil.rep") || "0"} Övgü`, 70, 218);
+  ctx.drawImage(avatar, 22, 87, 107, 107);
+  ctx.beginPath();
+  ctx.lineWidth = "2";
+  ctx.strokeStyle = "white";
+  ctx.rect(22, 87, 107, 107);
+  ctx.stroke();
+  ctx.fillStyle = "#FFFFFF";
+  ctx.globalAlpha = 0.80
+  ctx.fillRect(157, 199, 202, 23)
+  ctx.strokeStyle = "gray";
+  ctx.lineWidth = "6";
+  ctx.rect(157, 199, 202, 23)
+  ctx.fillStyle = "#8c9eff";
+  ctx.globalAlpha = 1;
+  var xp = db.fetch(member.id+"."+msg.guild.id+".xpp") || "0"
+  if (xp > xp2) xp = xp;
+  ctx.fillRect(160, 201, xp / xp2 * 198, 19);
+  ctx.globalAlpha = 1;
+  
+  ctx.fillStyle = "black";
+  ctx.font = '14px Ubuntu';
+  ctx.fillText(`Küresel XP`, 250, 250);
+  //ctx.fillText(`Sunucu Puan`, 250, 265);
+  ctx.fillText(`Krediler`, 241, 265);
+  ctx.textAlign = "right" 
+  ctx.fillText(allxp, 365, 250);
+  //ctx.fillText(`${xp}`, 365, 265);
+  ctx.fillText(db.fetch(member.id+".profil.money") || 0, 365, 265);
+  
+  /*ctx.font = '14px Arial';
+  ctx.textAlign = "left" 
+  ctx.textAlign = "center";
+  ctx.font = "25px Arial";
+  ctx.fillText("#"+sira, 190, 260);*/
+  
+  
+  
+  ctx.font = '15px Arial';
+  ctx.textAlign = "center"
+  ctx.fillText(`XP: ${xp} / ${xp2}`, 258, 217);
+  //ctx.drawImage(konusmabalonu, 150, 280, 25, 25);
+  ctx.font = `16px Ubuntu Condensed Regular Arial`;
+  ctx.fillText("Bilgi", 170, 300);//215, 300
+  ctx.font = '14px Arial';
+  ctx.textAlign = "left";
+  ctx.font=`14px Ubuntu Condensed Regular`;
+  if(db.has(user.id+".profil.açıklama")) {
+    if(db.fetch(user.id+".profil.açıklama").length >= 27) {
+      ctx.fillText(`${db.fetch(user.id+".profil.açıklama").substr(0, 27).endsWith(" ") ? db.fetch(user.id+".profil.açıklama").substr(0, 26) + db.fetch(user.id+".profil.açıklama").charAt(27).replace(" ", "") : db.fetch(user.id+".profil.açıklama").substr(0, 27)}`, 155, 325);
+      ctx.fillText(`${db.fetch(user.id+".profil.açıklama").substr(27, db.fetch(user.id+".profil.açıklama").length).startsWith(" ") ? db.fetch(user.id+".profil.açıklama").substr(28, db.fetch(user.id+".profil.açıklama").length) + db.fetch(user.id+".profil.açıklama").charAt(27).replace(" ", "") : db.fetch(user.id+".profil.açıklama").substr(27, db.fetch(user.id+".profil.açıklama").length)}`, 155, 345);
+    } else {
+      ctx.fillText(`${db.fetch(user.id+".profil.açıklama")}`, 155, 325);
+    }
+  } else {
+    ctx.fillText(`!!açıklama ile değiştirebilirsiniz.`, 155, 325); // ${member.user.username}
+  }
+  //rozet bölümü
+  //rozetler
+  const {body: minecraft} = await snekfetch.get("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e2e60e5c-f836-4048-9713-60b0e06ebfbb/d6yx2ii-644710ea-e868-4787-bc97-37a2bbd8550f.png/v1/fill/w_400,h_399,strp/minecraft_icon_for_mac_os_x_by_hamzasaleem_d6yx2ii-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9Mzk5IiwicGF0aCI6IlwvZlwvZTJlNjBlNWMtZjgzNi00MDQ4LTk3MTMtNjBiMGUwNmViZmJiXC9kNnl4MmlpLTY0NDcxMGVhLWU4NjgtNDc4Ny1iYzk3LTM3YTJiYmQ4NTUwZi5wbmciLCJ3aWR0aCI6Ijw9NDAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.cMCee4UKgAu1G5iZRcP7VxKDIXFd-pLWbcewXDNLyRk");
+  const {body: turkiye} = await snekfetch.get("https://cdn4.iconfinder.com/data/icons/world-flags-circular/1000/Flag_of_Turkey_-_Circle-512.png");
+  const {body: discord} = await snekfetch.get("https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png");
+  const {body: gta} = await snekfetch.get("https://icon-library.net/images/grand-theft-auto-v-icon/grand-theft-auto-v-icon-10.jpg");
+  const {body: undertale} = await snekfetch.get("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/46b63d3c-ae67-464c-9a37-670829b2a157/daapuzx-0df84dbf-89d0-4690-affa-b80d54452535.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzQ2YjYzZDNjLWFlNjctNDY0Yy05YTM3LTY3MDgyOWIyYTE1N1wvZGFhcHV6eC0wZGY4NGRiZi04OWQwLTQ2OTAtYWZmYS1iODBkNTQ0NTI1MzUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.9ucIKLdWf1OtFMs5lYcHKA9eCPkspB2xq9DNQB_xOdw");
+  const {body: terraria} = await snekfetch.get("https://icon-library.net/images/terraria-icon/terraria-icon-24.jpg");
+  const {body: lol} = await snekfetch.get("https://icon-library.net/images/league-of-legends-icon/league-of-legends-icon-26.jpg");
+  const {body: tos} = await snekfetch.get("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d4b59929-36b5-4029-9ac1-2decd05a57ac/d8qpt98-31b6af1c-1c15-4a57-801f-7c81e353d1d7.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2Q0YjU5OTI5LTM2YjUtNDAyOS05YWMxLTJkZWNkMDVhNTdhY1wvZDhxcHQ5OC0zMWI2YWYxYy0xYzE1LTRhNTctODAxZi03YzgxZTM1M2QxZDcucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.KJyu48k0ebPgRVAxamvJY64BLdJaXnIFxUmAT6nvXNQ");
+  const {body: csgo} = await snekfetch.get("https://steamuserimages-a.akamaihd.net/ugc/3336341088177464117/8D53A0CBBA686F16DC97FD2722D4F6174D6897EB/");
+  const {body: auxilium} = await snekfetch.get("https://cdn.discordapp.com/attachments/647909213095329803/658251123555041311/discord-512.png")
+  const {body: efy} = await snekfetch.get("https://cdn.discordapp.com/attachments/647909213095329803/658251297249689602/discord-512_1.png")
+  const {body: ibd} = await snekfetch.get("https://cdn.discordapp.com/attachments/647909213095329803/658263665140563978/discord-512_2.png")
+  const minecraftL = await Canvas.loadImage(minecraft)
+  const turkiyeL = await Canvas.loadImage(turkiye)
+  const discordL = await Canvas.loadImage(discord)
+  const gtaL = await Canvas.loadImage(gta)
+  const undertaleL = await Canvas.loadImage(undertale)
+  const terrariaL = await Canvas.loadImage(terraria)
+  const lolL = await Canvas.loadImage(lol)
+  const tosL = await Canvas.loadImage(tos)
+  const csgoL = await Canvas.loadImage(csgo)
+  const auxiliumL = await Canvas.loadImage(auxilium)
+  const efyL = await Canvas.loadImage(efy)
+  const ibdL = await Canvas.loadImage(ibd)
+  let a = {
+    "minecraft": minecraftL,
+    "turkiye": turkiyeL,
+    "discord": discordL,
+    "gtav": gtaL,
+    //"undertale": undertaleL,
+    //"terraria": terrariaL,
+    //"lol": lolL,
+    //"tos": tosL,
+    "csgo": csgoL,
+    //"auxilium": auxiliumL,
+    //"efy": efyL,
+    "ibd": ibdL
+  }
+  if (db.has(user.id+".rozetler")) {
+    let asd = Object.keys(db.get(user.id+".rozetler"))
+    for (var i = 0; i < asd.length; i++) {
+      if (i < 3) {
+        ctx.drawImage(a[asd[i]], (i === 0 ? 12 : (i === 1 ? 55 : (i === 2 ? 97 : ""))), 235, 40, 40)
+      } else if (i < 6) {
+        ctx.drawImage(a[asd[i]], (i === 3 ? 12 : (i === 4 ? 55 : (i === 5 ? 97 : ""))), 285, 40, 40)
+      } else if (i < 9) {
+        ctx.drawImage(a[asd[i]], (i === 6 ? 12 : (i === 7 ? 55 : (i === 8 ? 97 : ""))), 335, 40, 40)
+      }
+    }
+  }
+  const attachment = new Discord.Attachment(canvas.toBuffer(), "profile.png");
+    msg.channel.stopTyping();
+    msg.channel.send(`:frame_photo: | **${member.user.username} kullanıcısının profil kartı**`,attachment)
+    
+};
+
+exports.bilgi = {
+	açık: true,
+  kullanımlar: [],
+  zaman: 2000
+}
+
+exports.yardım = {
+  kategori: "Seviye",
+  isim: "profil",
+  açıklama: "Girilen kişinin ya da sizin profilinize bakarsınız.",
+  kullanım: "profil [<kullanıcı>]"
+}

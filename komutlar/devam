@@ -1,0 +1,21 @@
+exports.run = async (client, message, argüman) => {
+  const serverQueue = client.müzik.get(message.guild.id);
+  if (serverQueue && !serverQueue.playing) {
+    serverQueue.playing = true;
+    serverQueue.connection.dispatcher.resume();
+    return message.channel.send("⏯ ***Devam ediyor*** 👍")
+  }
+  return message.channel.send('Şarkı devam ediyor/oynamıyor.')
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["goon", "devam"],
+};
+
+exports.yardım = {
+  isim: "devam",
+  kategori: "Müzik",
+  açıklama: "Çalan müziği durdurur.",
+  kullanım: "devam"
+};

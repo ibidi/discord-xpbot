@@ -1,0 +1,38 @@
+  const Discord = require('discord.js')
+  const db = require('quick.db')
+
+  exports.run = async (client, message, args) => {
+  let s = 1; 
+  if(!args[0]) {
+    if(!db.has("numaralar")) {
+      return message.channel.send(`Telefon Numaraları
+
+  *Hiç bir sunucu telefon sistemini aktifleştirmemiş.*`)
+    }
+  }
+  if(!args[0]) var a = Object.keys(db.fetch("numaralar"));
+  if(db.has(`numaralar.${args[0]}`) === true) {
+    return message.channel.send(`Telefon Numaraları
+
+  ${client.guilds.get(db.fetch(`numaralar.${args[0]}.sunucu`)).name} - *${args[0]}*`)
+  } else {
+    var a = Object.keys(db.fetch("numaralar"));
+  }
+
+  message.channel.send(`Telefon Numaraları
+
+  ${a.map(x => `${s++}. ${client.guilds.get(db.fetch(`numaralar.${x}.sunucu`)).name} - *${x}*`).join("\n")}`)
+  }
+
+  exports.bilgi = {
+    açık: true,
+    kullanımlar: ["telefonnumaraları"],
+    zaman: 2000
+  };
+
+  exports.yardım = {
+    isim: "telefon-numaraları",
+    kategori: "Telefon",
+    açıklama: "Telefon sistemini aktifleştirmiş sunucuların numaralarını gösterir.",
+    kullanım: ""
+  };

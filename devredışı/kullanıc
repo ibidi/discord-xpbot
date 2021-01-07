@@ -1,0 +1,69 @@
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const moment = require('moment');
+const db = require('quick.db');
+
+exports.run = async (client, message, args) => {
+let user = message.mentions.users.first() || message.author
+
+const Durum = user.presence.status;
+const Durm = (Durum == "online" ? ("#228B22") : (Durum == "offline" ? ("808080") : (Durum == "idle" ? ("#FFFF00") : (Durum == "dnd" ? ("#FF0000") : ("#228B22")))))
+const durm = (Durum == "online" ? `${client.emojis.get("604024851560398869")}Çevrimiçi` : (Durum == "offline" ? `${client.emojis.get("604024852952776725")}Çevrimdışı` : (Durum == "idle" ? 'Boşta' : (Durum == "dnd" ? `${client.emojis.get("604024852046807088")}Rahatsız Etmeyin` : (`Bulunamadı`)))))
+
+const aylar = {
+ "01": "Ocak",
+ "02": "Şubat",
+ "03": "Mart",
+ "04": "Nisan",
+ "05": "Mayıs",
+ "06": "Haziran",
+ "07": "Temmuz",
+ "08": "Ağustos",
+ "09": "Eylül",
+ "10": "Ekim",
+ "11": "Kasım",
+ "12": "Aralık"
+} 
+
+const member = message.guild.member(user);
+let uyarıS = await db.fetch(`uyarıSayı_${user.id}`);
+let gelistirici = await db.fetch(`geliştirici_${member.id}`);
+let bughunter = await db.fetch(`bughunter_${member.id}`);
+let destek = await db.fetch(`canlıdestek_${member.id}`);
+
+if (db.has(`beyazliste_${member.id}`) === true) {
+ const embed = new Discord.RichEmbed()
+.setColor(Durm)
+.setThumbnail(user.avatarURL || user.defaultavatarURL)
+.addField(`**\`>\` Kullanıcı Hakkında :**`, `İsim : ${user.username}\nID : ${user.id}\nProfil : ${user}\nDurum : ${durm || "Tespit Edilemedi!"}\nHesap Oluşturma Tarihi : ${moment(user.createdAt).format('DD')} ${aylar[moment(user.createdAt).format('MM')]} ${moment(user.createdAt).format('YYYY HH:mm:ss')}`)
+.addField(`**\`>\` Üyelik Bilgileri :**`, `Takma Adı : ${member.nickname || "Ayarlanmamış!"}\nSunucuya Katılma Tarihi : ${moment(member.joinedAt).format('DD')} ${aylar[moment(member.joinedAt).format('MM')]} ${moment(member.joinedAt).format('YYYY HH:mm:ss')}\n Sahip Olduğu En Yüksek Rol : ${member.highestRole}\nSahip Olduğu Roller : ${member.roles.filter(r => r.name !== "@everyone").map(r => r).join(' ') ? member.roles.filter(r => r.name !== "@everyone").map(r => r).join(' ') : `Bulunamadı`}`)
+.addField(`**\`>\` Kullanıcının Rütbeleri :**`, `**${gelistirici || "Kullanıcı"}**\n${bughunter || ""}\n${destek || ""}`)
+.addField(`**\`>\` Kullanıcının Uyarıları :**`, `${uyarıS || "Kullanıcının veritabanına kayıtlı uyarısı bulunamadı!"}`)
+.setFooter("Beyaz Listeli Kullanıcı", "https://cdn.discordapp.com/emojis/612366897492787211.png?v=1")
+
+message.channel.send({embed : embed}) 
+} else {
+const embed = new Discord.RichEmbed()
+.setColor(Durm)
+.setThumbnail(user.avatarURL || user.defaultavatarURL)
+.addField(`**\`>\` Kullanıcı Hakkında :**`, `İsim : ${user.username}\nID : ${user.id}\nProfil : ${user}\nDurum : ${durm || "Tespit Edilemedi!"}\nHesap Oluşturma Tarihi : ${moment(user.createdAt).format('DD')} ${aylar[moment(user.createdAt).format('MM')]} ${moment(user.createdAt).format('YYYY HH:mm:ss')}`)
+.addField(`**\`>\` Üyelik Bilgileri :**`, `Takma Adı : ${member.nickname || "Ayarlanmamış!"}\nSunucuya Katılma Tarihi : ${moment(member.joinedAt).format('DD')} ${aylar[moment(member.joinedAt).format('MM')]} ${moment(member.joinedAt).format('YYYY HH:mm:ss')}\n Sahip Olduğu En Yüksek Rol : ${member.highestRole}\nSahip Olduğu Roller : ${member.roles.filter(r => r.name !== "@everyone").map(r => r).join(' ') ? member.roles.filter(r => r.name !== "@everyone").map(r => r).join(' ') : `Bulunamadı`}`)
+.addField(`**\`>\` Kullanıcının Rütbeleri :**`, `**${gelistirici || "Kullanıcı"}**\n${bughunter || ""}\n${destek || ""}`)
+.addField(`**\`>\` Kullanıcının Uyarıları :**`, `${uyarıS || "Kullanıcının veritabanına kayıtlı uyarısı bulunamadı!"}`)
+
+message.channel.send({embed : embed})
+}
+}
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["kullanıcı-bilgi", "user"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "kullanıcı",
+  kategori: "Kullanıcı",
+  açıklama: "Kullanıcı bilgisini gösterir.",
+  kullanım: "kullanıcı <kullanıcı>"
+};

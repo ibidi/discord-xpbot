@@ -1,0 +1,18 @@
+exports.run = async (client, msg, argüman) => {
+  msg.channel.send(`**${msg.guild.name} Sunucusunun Emojileri**
+
+${msg.guild.emojis.map(r=>`${r} (\`${r.name}\`)`).join("\n") || "Bu sunucuda hiç emoji yok."}`)
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: [],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "emojiler",
+  kategori: "Kullanıcı",
+  açıklama: "Sunucudaki emojileri gösterir.",
+  kullanım: ""
+};

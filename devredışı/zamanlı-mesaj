@@ -1,0 +1,50 @@
+const Discord = require('discord.js');
+const db = require('quick.db');
+const ms = require('ms');
+
+exports.run = async (client, message, args) => {
+let p = await db.fetch(message.guild.id + "prefix") || client.ayarlar.prefix;
+
+let arguman = args[0];
+let kanal = message.mentions.channels.first();
+let süre = args[2];
+let mesaj = args.slice(3).join(' ');
+  
+if (!arguman) return message.channel.send(`Lütfen bir argüman belirtin. \`ekle\` veya \`kaldır\` yazın.`)
+  
+if (arguman === "ekle") {
+  if (!kanal) return message.channel.send(`Lütfen bir kanal girin.`)
+  if (!süre) return message.channel.send(`Lütfen bir süre girin.`)
+  if (!mesaj) return message.channel.send(`Lütfen mesajınızı girin.`)
+
+  if (300000 > ms(`${süre}`)) return message.channel.send(`Zamanlı mesaj en kısa 5 dakika **olabilir!**`)
+  if (36000000 <= ms(`${süre}`)) return message.channel.send(`Zamanlı mesaj en fazla 10 saat **olabilir!**`)
+  
+  db.set("zaman." + kanal.id, {
+        sure: args[2] , mesaj : args.slice(3).join(' '), kanal : kanal.id
+})
+  
+  message.channel.send(`:ok_hand: Zamanlı mesaj özelliği başarıyla ayarlandı! ${kanal} kanalına \`${süre}\` aralığı ile \`${mesaj}\` mesajı yollanacaktır.`)
+}
+if (arguman === "kaldır") {
+  if (!kanal) return message.channel.send(`Lütfen bir kanal girin.`)
+  
+  if (db.has("zaman." + kanal.id) === false) return message.channel.send(`Bu kanalda zamanlı mesaj ayarlanmamış!  `)
+  
+  db.delete("zaman." + kanal.id)
+  
+  message.channel.send(`:ok_hand: Zamanlı mesaj özelliği başarıyla **kaldırıldı!** ${kanal} kanalından **kaldırıldı!**`)
+}
+}
+exports.bilgi = {
+    açık: true,
+  kullanımlar: [],
+  zaman: 2000
+}
+exports.yardım = {
+    kategori: "Ayar",
+    yetki: "MANAGE_GUILD",
+    isim : 'zamanlı-mesaj',
+    açıklama : 'Zamanlı mesaj sistemini ayarlar.',
+    kullanım : 'zamanlı-mesaj [ekle/kaldır] [kanal] [süre] []'
+}

@@ -1,0 +1,144 @@
+} else if(x === '2') {
+    const image = "https://tatsu.gg/images/backgrounds/profile/mountaindawn_prof_bg.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 2. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }
+  } else if(x === '3') {
+    const image = "https://tatsu.gg/images/backgrounds/profile/rocketleague_boost_prof_bg.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 3. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }
+      } else if(x === '4') {
+    const image = "https://media.discordapp.net/attachments/702785517787283465/704707841885339779/ibidi-kanin.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 4. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }
+  } else if(x === '5') {
+    const image = "https://media.discordapp.net/attachments/702785517787283465/704712375185440859/ibidicc.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 5. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }
+      } else if(x === '6') {
+    const image = "https://tatsu.gg/images/backgrounds/profile/jiji_prof_bg.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 6. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }
+    } else if(x === '7') {
+    const image = "https://tatsu.gg/images/backgrounds/profile/interstellarblackhole_prof_bg.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 7. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }
+    } else if(x === '8') {
+    const image = "https://tatsu.gg/images/backgrounds/profile/opulus_AntiStar_earth_bg.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 8. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }
+          } else if(x === '9') {
+    const image = "https://tatsu.gg/images/backgrounds/profile/PPNhydnBG.png";
+    if(await db.fetch(msg.author.id+".arkaplanlar."+fiyatlar[x][0])) {
+      await db.set(`profilP_${msg.author.id}`, image);
+      return msg.channel.send('Arka planın başarıyla 9. arka plan olarak ayarlandı!');
+    }
+    try {
+    const same_i = await db.fetch(`profilP_${msg.author.id}`);
+    if(same_i == image) return msg.channel.send('Profil arka planın zaten şu anki arka plan olarak ayarlı!');
+    await db.set(`profilP_${msg.author.id}`, image);
+    msg.channel.send('<:evet:702786528820068352> Profil arka planın başarıyla aşağıdaki resim olarak ayarlandı!', {
+      files: [image]
+    });
+      db.set(msg.author.id+".profil.money", kredi - fiyatlar[x][1])
+      db.set(msg.author.id+".arkaplanlar."+fiyatlar[x][0], true)
+    } catch (err) {
+      console.error(err);
+    }

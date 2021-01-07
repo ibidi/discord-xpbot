@@ -1,0 +1,56 @@
+exports.run = async (client, message, argüman) => {
+  const serverQueue = client.müzik.get(message.guild.id);
+  if (!message.member.voiceChannel)
+    return message.channel.send("**İlk önce sesli bir kanala katılmalısın.**");
+  if (!serverQueue)
+    return message.channel.send("**Müzik listesi boş gibi görünüyor.**");
+  if (message.member.hasPermission("MUTE_MEMBERS")) {
+    serverQueue.connection.dispatcher.end(" ");
+    message.channel.send(`⏩ ***Geçildi*** 👍`);
+  }
+  if (!message.member.hasPermission("MUTE_MEMBERS")) {
+    if (serverQueue)
+      return message.channel.send(`Geçmek için **1/3**`).then(message => {
+        message.react("➡").then(r => {
+          const backwardsFilter = (reaction, user) =>
+            reaction.emoji.name === "➡";
+          const backwards = message.createReactionCollector(backwardsFilter, {
+            time: 10000
+          });
+
+          backwards.on("collect", r => {
+            if (
+              message.reactions.filter(a => a.emoji.name == "➡").first().count >
+              3
+            )
+              return;
+            message.edit(
+              `Geçmek için **${
+                message.reactions.filter(a => a.emoji.name == "➡").first().count
+              }/3**`
+            );
+            if (
+              message.reactions.filter(a => a.emoji.name == "➡").first()
+                .count == 3
+            ) {
+              serverQueue.connection.dispatcher.end(" ");
+              message.edit(`⏩ ***Geçildi*** 👍`);
+            }
+          });
+        });
+      });
+  }
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["skip", "geç", "s"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "geç",
+  kategori: "Müzik",
+  açıklama: "Çalınan şarkıyı geçmenize yarayan komut.",
+  kullanım: "geç"
+};

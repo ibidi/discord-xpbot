@@ -1,0 +1,86 @@
+const Discord = require('discord.js');
+const db = require("quick.db")
+
+exports.run = async (client, message, args) => {
+  var cagri;
+  let prefix = await require('quick.db').fetch(`${message.guild.id}.prefix`) || client.ayarlar.prefix
+  if(!args[0]) return message.channel.send(`Lütfen bir sunucunun numarasını girin. Bütün sunucuların numarasını görmek için **${prefix}telefon-numaraları** komudunu kullanın.`)
+  if(db.has(`numaralar.${args[0]}`) === false) return message.channel.send(`Böyle bir numara sistemde bulunmuyor.`)
+  if(db.fetch(`numaralar.${args[0]}.sunucu`) === message.guild.id) return message.channel.send(`Şu an mevcut olduğun sunucuyu arayamazsın.`)
+  if(db.has(db.fetch(`numaralar.${args[0]}.sunucu`)+".telefonKanal") === false) return message.channel.send(`Bu sunucunun telefon çağrılarının gideceği kanalı ayarlanmamış.`)
+  let sunucu = client.guilds.get(db.fetch(`numaralar.${args[0]}.sunucu`))
+  let kanal = sunucu.channels.get(db.fetch(`${sunucu.id}.telefonKanal`))
+  let orasi = message.channel
+  let ordakisunucu = message.guild
+  if(db.fetch(`${sunucu.id}.çağrı`) === true) return message.channel.send(`Bu sunucu şu an başka bir sunucuyla görüşmede.`)
+  if(db.fetch(`${ordakisunucu.id}.çağrı`) === true) return message.channel.send(`Siz şu an başka bir sunucuyla görüşmektesiniz. Lütfen bu görüşmeyi sonlandırın ve tekrar deneyin.`)
+  if(!db.has(`${message.guild.id}.numara`)) return message.channel.send(`Bu sunucunun bir telefon numarası olmadığı için bir sunucuyu arayamazsınız. Telefon numarası almak için: **${prefix}telefon-numarası**`)
+  message.channel.send(`:telephone_receiver: Çağrı gönderildi!`)
+  kanal.send(`:telephone: **${db.fetch(`${message.guild.id}.numara`)}** numaralı sunucu sizi aramak istiyor!
+*Aramayı açmak için \`aç\` yazınız. Geri çevirmek için ise \`açma\` yazınız.*`);
+  const collector = client.channels.get(kanal.id).createCollector(message => message.content.startsWith(''), {
+      time: 15000
+  })
+  collector.on('message', (message) => {
+      if (message.content === 'aç') { 
+        orasi.send(`:telephone_receiver: Çağrı alındı.
+*Eğer konuşmanız biterse \`kapat\` yazarak çağrıyı kapatabilirsiniz.*`)
+        db.set(`${sunucu.id}.çağrı`, true)
+        db.set(`${ordakisunucu.id}.çağrı`, true)
+        collector.stop('success')
+      }
+      if (message.content === 'açma') { 
+        orasi.send(`:telephone: Çağrı karşı taraftan reddedildi.`)
+        collector.stop('aborted')
+      }
+  })
+  
+  collector.on('end', (collected, reason) => {
+      var chan = message.channel
+      if (reason === 'time') return message.channel.send(":telephone: Hat meşgul...")
+      if (reason === 'aborted') {
+        db.delete(`${sunucu.id}.çağrı`)
+        db.delete(`${ordakisunucu.id}.çağrı`)
+        client.channels.get(kanal.id).send(":telephone: Çağrı reddedildi.")
+      }
+      if (reason === 'success') {
+        client.channels.get(kanal.id).send(":telephone_receiver: Çağrıyı aldınız.")
+        //eslint-disable-next-line no-useless-escape
+        client.channels.get(message.channel.id).send(":telephone_receiver: Çağrı karşı taraftan alındı.\n*Çağrıyı kapatmak için `kapat` yazınız.*")
+        client.channels.get(kanal.id).send(":telephone: *Çağrıyı kapatmak için `kapat` yazınız.*")
+        cagri = true
+        client.on('message', message => {
+          function contact() {
+            if (cagri === false) return
+            if (message.author.id === client.user.id) return
+            if (message.content.startsWith('kapat')) {
+              db.delete(`${sunucu.id}.çağrı`)
+              db.delete(`${ordakisunucu.id}.çağrı`)
+              message.channel.send(`:telephone: Çağrı kapatıldı!`)
+              if (message.channel.id === chan.id) client.channels.get(kanal.id).send(":telephone: Çağrı karşı taraftan kapatıldı.")
+              if (message.channel.id === kanal.id) chan.send(":telephone: Çağrı karşı taraftan kapatıldı.")
+              db.delete(`${sunucu.id}.çağrı`)
+              db.delete(`${ordakisunucu.id}.çağrı`)
+              return cagri = false
+            }
+            if (message.channel.id === chan.id) client.channels.get(kanal.id).send(`:telephone_receiver: *${message.member.nickname || message.author.username}:* ${message.content}`)
+            if (message.channel.id === kanal.id) chan.send(`:telephone_receiver: *${message.member.nickname || message.author.username}:* ${message.content}`)
+          }
+          contact(client)
+        })
+      }
+    })
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["ara"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "telefon",
+  kategori: "Telefon",
+  açıklama: "Girilen sunucunun numarasını arar.",
+  kullanım: "telefon [numara]"
+};

@@ -1,0 +1,28 @@
+const Discord = require('discord.js')
+const db = require('quick.db')
+
+exports.run = async (client, msg, args) => {
+  const prefix = db.fetch(msg.guild.id+".prefix") || client.ayarlar.prefix
+  if(db.has(`${msg.guild.id}.numara`) === false) { //qnq eğer yoksa di,mi evtbura :D karıştıdrdm
+    var x = msg.guild.id.slice(0, 3) + "-" + msg.guild.id.slice(-4)
+    db.set(`${msg.guild.id}.numara`, x)//sanırım böyle olcak
+    db.set(`numaralar.${x}.sunucu`, msg.guild.id)
+    msg.channel.send(`:telephone: Bu sunucu için bir telefon numarası ürettim!
+*${x} bu sunucunun yeni telefon numarası. Eğer bir sunucuda, herhangi bir kanalda ${prefix}telefon ${x} yazarlar ise, ${prefix}telefon-kanal ile ayarlanmış kanala telefon mesajı gidecektir.*`)
+    return
+  } else {
+    msg.channel.send(`:telephone_receiver: Sunucunun geçerli telefon numarası: *${db.fetch(`${msg.guild.id}.numara`)}*`)
+  }
+}
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["telefonnumarası"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "telefon-numarası",
+  kategori: "Telefon",
+  açıklama: "Telefon sistemini aktifleştirirsiniz ve sizin sunucunuza bir numara verir.",
+  kullanım: ""
+};

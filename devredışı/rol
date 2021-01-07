@@ -1,0 +1,34 @@
+const Discord = require('discord.js')
+
+exports.run = async (client, msg, argümanlar, db) => {
+    const x = argümanlar.join(" ").split(" ")[0]
+    const y = argümanlar.join(" ").slice(x.length+1)
+    if(!x) return msg.channel.send("Lütfen bir kullanıcı gir.")
+    if(!y) return msg.channel.send("Lütfen bir rol gir.")
+    const kullanici = msg.mentions.members.first() || msg.guild.members.find(r=>r.user.username===x) || msg.guild.members.get(x)
+    const rol = msg.mentions.roles.first() || msg.guild.roles.find(r=>r.name===y) || msg.guild.roles.get(y)
+    if(!kullanici) return msg.channel.send(`\`${x}\` isimli/ID'li bir kullanıcı bulunamadı.`)
+    if(!rol) return msg.channel.send(`\`${y}\` isimli/ID'li bir rol bulunamadı.`)
+      
+    if(msg.guild.members.get(kullanici.id).roles.has(rol.id)) {
+      msg.guild.members.get(kullanici.id).removeRole(rol.id)
+      return msg.channel.send(`:ok_hand: \`${kullanici.user.tag}\` isimli kullanıcıdan \`${rol.name}\` isimli rol alınmıştır. Yetkili: \`${msg.author.tag}\``)
+    } else {
+      msg.guild.members.get(kullanici.id).addRole(rol.id)
+      return msg.channel.send(`:ok_hand: \`${kullanici.user.tag}\` isimli kullanıcıya \`${rol.name}\` isimli rol verilmiştir. Yetkili: \`${msg.author.tag}\``)
+    }
+};
+
+exports.bilgi = {
+	açık: true,
+  kullanımlar: [],
+  zaman: 2000
+}
+
+exports.yardım = {
+  kategori: "Yetkili",
+  yetki: "MANAGE_ROLES", 
+  isim: "rol",
+  açıklama: "Girilen kullanıcıya girilen rolü verir ya da alır.",
+  kullanım: "rol [isim] [rol]"
+}

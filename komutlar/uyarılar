@@ -1,0 +1,58 @@
+const Discord = require('discord.js');
+const db = require('quick.db');
+
+exports.run = async (client, message, args) => {
+let p = await db.fetch(`prefix_${message.guild.id}`) || client.ayarlar.prefix;
+
+let kullanıcı = message.mentions.users.first();
+
+if (!kullanıcı) return message.channel.send(`Bir kullanıcının uyarılarını görmek için etiketleyin.**(${p}uyarılar <@kullanıcı>)**`)
+  
+let uyarıS = await db.fetch(`uyarıSayı_${kullanıcı.id}`);
+let uyarıSebep = await db.fetch(`uyarıKSebep_${args[1]}`);
+let uyarıKod = db.fetch(`uyarıKod_${kullanıcı.id}`);
+
+if(uyarıS === 0) {
+  message.channel.send(`${kullanıcı.username} adlı kullanıcının veritabanına kayıtlı uyarısı **bulunamadı!**`)
+  return;
+}
+if(uyarıS === null) {
+  message.channel.send(`${kullanıcı.username} adlı kullanıcının veritabanına kayıtlı uyarısı **bulunamadı!**`)
+return;
+}
+if(!args[1]) {
+const embed = new Discord.RichEmbed()
+.setAuthor(`${kullanıcı.tag} - Uyarıları`, kullanıcı.avatarURL || kullanıcı.defaultavatarURL)
+.setDescription(`\`\`\`diff\n- Uyarı Sayısı : ${uyarıS ? uyarıS : 'Bulunmuyor'}\n- Uyarı Kodları : ${uyarıKod ? uyarıKod : 'Bulunmuyor'}\`\`\``)
+//.setThumbnail(kullanıcı.avatarURL || kullanıcı.defaultavatarURL)
+.setFooter(`Bir uyarı hakkında bilgi almak için ${p}uyarılar @${kullanıcı.tag} <kod>`)
+.setColor(client.ayarlar.renkBM)
+message.channel.send(embed)
+return;
+}
+if (uyarıKod.includes(args[1])) {
+const embed = new Discord.RichEmbed()
+.setAuthor(`${kullanıcı.username} - Uyarı Bilgisi`, kullanıcı.avatarURL || kullanıcı.defaultavatarURL)
+.setDescription(`\`\`\`md\n [Sebep] : ${uyarıSebep}\`\`\``)
+//.setThumbnail(kullanıcı.avatarURL || kullanıcı.defaultavatarURL)
+.setFooter(`${client.user.username} - Uyarı Sistemi`)
+.setColor(client.ayarlar.renkBM)
+message.channel.send(embed)
+return;
+} else {
+message.channel.send(`${client.emojis.get(client.emoji.çarpı)} Girdiğiniz uyarı kodu yanlış veya silinmiş!`)
+}
+}
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: [],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "uyarılar",
+  kategori: "Kullanıcı",
+  açıklama: "Belirlenen XP'ye gelen kullanıcıya verilecek rolü ayarlar.",
+  kullanım: "xp-ödül-ekle [rol] [xp]"
+};

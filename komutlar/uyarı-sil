@@ -1,0 +1,44 @@
+const Discord = require('discord.js');
+const db = require('quick.db');
+
+exports.run = async (client, message, args) => {
+let p = await db.fetch(`prefix_${message.guild.id}`) || client.ayarlar.prefix;
+
+let kullanıcı = message.mentions.users.first();
+//if (message.author.id === kullanıcı.id) return message.channel.send(`${client.emojis.get(client.emoji.çarpı)} Kendi uyarını silemezsin!`)
+if (!kullanıcı) return message.channel.send(`
+<:uyari:703977358482341978> **${message.author.username},** uyarısını istediğin bir kullanıcıyı etiketle: \`${p}uyarı-sil <@kullanıcı>\`
+<:tos:703976996962697286> **>** Genel kullanımı: \`${p}uyarı-sil <@kullanıcı> <kod>\`
+<:bilgi:703556438772940820> **>** Komut hakkında detaylı yardım için: \`!!yardım uyarı-sil\``)
+if (db.has(`uyarıSayı_${kullanıcı.id}`) === false) return message.channel.send(`${kullanıcı.username} adlı kullanıcının veritabanına kayıtlı uyarısı **bulunamadı!**`) 
+if (!args[1]) return message.channel.send(`${kullanıcı.username} adlı kullanıcının hangi kodlu uyarısını silmek **istiyorsun?(${p}uyarı-sil @${kullanıcı.tag} <kod>)**`)
+if (!db.fetch(`uyarıKod_${kullanıcı.id}`).includes(args[1])) return message.channel.send(`Girdiğiniz uyarı kodu yanlış veya silinmiş!`)
+
+let x = args[1] 
+let arr = []
+db.fetch(`uyarıKod_${kullanıcı.id}`).forEach(v => {
+if (v !== x) {
+arr.push(v)
+}
+})
+  
+db.set(`uyarıKod_${kullanıcı.id}`, arr)
+db.add(`uyarıSayı_${kullanıcı.id}`, -1)
+db.delete(`uyarıKSebep_${args[1]}`)
+
+message.channel.send(`${kullanıcı.username} adlı kullanıcının \`${args[1]}\` kodlu uyarısı başarıyla **silindi!**`)
+}
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: [],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "uyarı-sil",
+  yetki: "MANAGE_ROLES",
+  kategori: "Moderasyon",
+  açıklama: "Uyardığınız kullanıcının uyarısını silersiniz.",
+  kullanım: "uyarı-sil [@kullanıcı] [kod]"
+};

@@ -1,0 +1,66 @@
+const Discord = require('discord.js');
+const request = require('node-superfetch');
+const snekfetch = require("snekfetch");
+const Canvas = require('canvas')
+
+exports.run = async (client, msg, args, db) => {
+    var u = msg.author
+  
+  const message = msg;
+
+  var canvas = Canvas.createCanvas(1023, 682);
+  const ctx = canvas.getContext('2d');
+      var {body: downloadedImageBuffer} = await snekfetch.get("https://cdn.discordapp.com/attachments/521315608751767562/554401975421239296/sokakcikis.jpg");
+    const background = await Canvas.loadImage( downloadedImageBuffer );
+  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+  /* ctx.beginPath();
+  ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.clip(); */
+
+  const { body: buffer } = await snekfetch.get(u.avatarURL);
+  const avatar = await Canvas.loadImage(buffer);
+    const path = require('path')
+  Canvas.registerFont('Bebas.otf', { family: 'BebasNeueBold' })
+  ctx.font=`108px Bebas`;
+  ctx.fillStyle = "#FFFFFF";
+  ctx.textAlign = "center"
+  ctx.fillText(`${u.username.toUpperCase()}`, 505, 480);
+  ctx.fillStyle = "#000000";
+  const Durum = u.presence.status;
+        var Durmm = ''
+
+				if (Durum === 'online') { var Durmm = 'green' }
+				if (Durum === 'offline') { var Durmm = 'grey' }
+				if (Durum === 'dnd') { var Durmm = 'red' }
+				if (Durum === 'idle') { var Durmm = 'yellow' }
+
+				ctx.beginPath();
+				ctx.lineWidth = 8;
+				ctx.arc(406 + 100, 180 + 100, 100, 0, 2 * Math.PI, false);
+				ctx.strokeStyle = Durmm;
+				ctx.stroke();
+				ctx.clip();
+				ctx.drawImage(avatar, 406, 180, 200, 200);
+
+  		msg.channel.send({
+					files: [{
+						attachment: canvas.toBuffer(),
+						name: 'test.png'
+					}]
+				});
+}
+
+exports.bilgi = {
+	açık: true,
+  kullanımlar: [],
+  zaman: 2000
+}
+
+exports.yardım = {
+  kategori: "Sistem",
+  isim: "test",
+  açıklama: "Ben bu komutta bir şeyler deniyom.",
+  kullanım: ""
+}

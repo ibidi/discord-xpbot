@@ -1,0 +1,30 @@
+const db = require('quick.db')
+
+exports.run = async (client, message, args) => {
+    let prefix = await db.fetch(`${message.guild.id}.prefix`) || client.ayarlar.prefix
+  let kanal = message.mentions.channels.first() || message.guild.channels.find(s => s.name.match(new RegExp(args.slice(0).join("-"), 'g')))
+    if(!kanal) {
+        return message.channel.send(`Lütfen bir kanal girin.`)
+    }
+    if(db.has(`${message.guild.id}.starChannel`)) {
+        if(kanal.id === db.fetch(`${message.guild.id}.starChannel`))
+        return message.channel.send(`Starboard mesajlarının gönderileceği kanal zaten <#${kanal.id}> olarak ayarlı.`)
+    }
+    db.set(`${message.guild.id}.starChannel`, kanal.id)
+    message.channel.send(`:ok_hand: Starboard mesajlarının gönderileceği kanal <#${kanal.id}> olarak ayarlanmıştır.`)
+
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["starboardkanal"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "starboard-kanal",
+  yetki: "MANAGE_CHANNELS",
+  kategori: "Ayar",
+  açıklama: "Starboard mesajlarının gideceği kanalı ayarlarsınız.",
+  kullanım: "starboard-kanal [kanal]"
+};

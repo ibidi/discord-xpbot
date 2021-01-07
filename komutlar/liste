@@ -1,0 +1,23 @@
+exports.run = async (client, message, argüman) => {
+  const Discord = require("discord.js");
+  const serverQueue = client.müzik.get(message.guild.id);
+  let index = 0;
+  if (!serverQueue) return message.channel.send('**Müzik listesi boş gibi görünüyor.**')
+  const embeds = new Discord.RichEmbed()
+  .setDescription(`[${message.guild.name} müzik listesi](https://discord.gg/A2TVMTK)\n\n__**Şu an çalan**__:\n[${serverQueue.songs[0].title}](${serverQueue.songs[0].url}) | \`${serverQueue.songs[0].durationm}:${serverQueue.songs[0].durations}\`\n\n\n__**Sıradakiler**__:\n\n${serverQueue.songs.map(song => `\`${++index}\` [${song.title}](${song.url}) | \`${song.durationm}:${song.durations}\``).join('\n\n')}`)
+  .setFooter(`Sırada ${serverQueue.songs.length} müzik bulunuyor.`)
+   message.channel.send(embeds).catch(error => console.log(error.message))
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: ["queue", "liste"],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "liste",
+  kategori: "Müzik",
+  açıklama: "Sunucudaki müzik listesini gösterir.",
+  kullanım: "liste"
+};

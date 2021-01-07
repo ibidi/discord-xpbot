@@ -1,0 +1,20 @@
+const Discord = require('discord.js');
+
+exports.run = (client, message, args) => {
+  let mesaj = args.slice(0).join(' ');
+if (mesaj.length < 1) return message.reply('Yazmam için herhangi bir şey yazmalısın.');
+  message.delete();
+  message.channel.send(mesaj);
+};
+
+exports.bilgi = {
+	açık: true,
+  kullanımlar: [],
+}
+
+exports.yardım = {
+  kategori: "Admin",
+  isim: "yaz",
+  açıklama: "hmm",
+  kullanım: "yaz [yazı]"
+}

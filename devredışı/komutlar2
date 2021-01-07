@@ -1,0 +1,69 @@
+const Discord = require("discord.js")
+
+exports.run = async (client, msg, args, db) => {
+    let p = db.fetch(`${msg.guild.id}.prefix`) || client.ayarlar.prefix;
+   let komutisim = args[0]
+   var x = 1
+   if(!komutisim) {
+     const komutlarım = client.komutlar;
+
+    const komutİsimleri = komutlarım.keyArray();
+    const longest = komutİsimleri.reduce(
+      (long, str) => Math.max(long, str.length),
+      20
+    );
+
+    let currentCategory = "";
+    const sorted = komutlarım
+      .array()
+      .sort((p, c) =>
+        p.yardım.kategori > c.yardım.kategori
+          ? 1
+          : p.yardım.kategori > c.yardım.kategori &&
+            p.yardım.kategori == c.yardım.kategori
+          ? 1
+          : -1
+      );
+    let output = " ";
+    let cat;
+    sorted.forEach(async c => {
+      cat = c.yardım.kategori;
+      if (currentCategory != cat) {
+        output += `${cat ? `\n[${cat.length + 1}] - ${cat}` : ""} `;
+        currentCategory = cat;
+      }
+    });
+    msg.channel.send(`\`\`\`js
+EfyBot — Komut Grupları${output}
+\`\`\`
+**>** Bir komut hakkında yardım almak için \`${p}komutlar [<komut ismi>]\` şeklinde kullan. Örneğin: \`${p}komutlar rank\`
+`).catch(error => console.log(error.message));
+   } else {
+     let command = args[0];
+     let xy;
+      if (client.komutlar.has(command)) {
+        command = client.komutlar.get(command) || client.komutlar.get(client.kullanımlar.get(command));
+        if(command.bilgi.kullanımlar.length > 0) {
+          xy = `\n**Alternatifler**: \`${command.bilgi.kullanımlar.join("\`, \`")}\``        
+        }
+        msg.channel.send(`**\`${command.yardım.isim}\`** __\`${command.yardım.açıklama}\`__${xy || ""}
+
+**Kullanım:** ${command.yardım.kullanım}`)
+    } else {
+      return msg.channel.send(`\`${command}\` isimli bir komut bulunamadı.`)
+    }
+  }
+};
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: [],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "komutlar2",
+  kategori: "Kullanıcı",
+  açıklama: "Tüm komutları gösterir2.",
+  kullanım: "komutlar2 [<komut ismi>]"
+};

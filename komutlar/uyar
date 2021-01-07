@@ -1,0 +1,56 @@
+const Discord = require('discord.js');
+const db = require('quick.db');
+const generator = require('generate-password');
+
+exports.run = async (client, message, args) => {
+let p = await db.fetch(`prefix_${message.guild.id}`) || client.ayarlar.prefix;
+
+let kullanıcı = message.mentions.users.first();
+let sebep = args.slice(1).join(' ');
+//if (message.author.id === kullanıcı.id) return message.channel.send(`${client.emojis.get(client.emoji.çarpı)} Kendi uyarını uyaramazsın!`)
+if (!kullanıcı) return message.channel.send(`
+<:uyari:703977358482341978> **${message.author.username},** uyarmak istediğin bir kullanıcıyı etiketle: \`${p}uyar <@kullanıcı>\`
+<:tos:703976996962697286> **>** Genel kullanımı: \`${p}uyar <@kullanıcı> <sebep>\`
+<:bilgi:703556438772940820> **>** Komut hakkında detaylı yardım için: \`!!yardım uyar\``)
+if (!sebep) return message.channel.send(`<:uyari:703977358482341978> **${message.author.username},** (${kullanıcı.username}) adlı kullanıcıyı uyarmak için bir sebep yaz: \`${p}uyar <@kullanıcı> <sebep>\`
+<:tos:703976996962697286> **>** Genel kullanımı: \`${p}uyar <@kullanıcı> <sebep>\`
+<:bilgi:703556438772940820> **>** Komut hakkında detaylı yardım için: \`!!yardım uyar\``)
+
+let pass = generator.generate({
+length : 5,
+numbers : true
+})
+
+db.add(`uyarıSayı_${kullanıcı.id}`, +1)
+db.set(`uyarıKSebep_${pass}`, sebep)
+db.push(`uyarıKod_${kullanıcı.id}`, pass)
+
+message.channel.send(`<:evet:702786528820068352> **${kullanıcı.username}**, (${kullanıcı.id}) adlı kullanıcı başarılı bir şekilde uyarıldı.
+<:tos:703976996962697286> **>** Uyarı kayıt kodu: **${pass}**`)
+
+let uyarıS = await db.fetch(`uyarıSayı_${kullanıcı.id}`)
+let kanal = await db.fetch(`logK_${message.guild.id}`)
+
+const embed = new Discord.RichEmbed()
+.setTitle(`İşlem: Uyarı`)
+.setThumbnail(kullanıcı.avatarURL || kullanıcı.defaultavatarURL)
+.addField(`**Kullanıcı Bilgileri :**`, `İsim: ${kullanıcı.username}\n ID: ${kullanıcı.id}\n Uyarı Sayısı: ${uyarıS}`)
+.addField(`**Uyarı Bilgisi :**`, `Sebep: ${sebep}\nKodu : ${pass}`)
+.addField(`**Yetkili Bilgileri :**`, `Hesap: ${message.author}`)
+.setColor(client.ayarlar.renkBM)
+message.guild.channels.get(kanal).send(embed)
+}
+
+exports.bilgi = {
+  açık: true,
+  kullanımlar: [],
+  zaman: 2000
+};
+
+exports.yardım = {
+  isim: "uyar",
+  yetki: "MANAGE_ROLES",
+  kategori: "Moderasyon",
+  açıklama: "Bir kullanıcıyı uyarırsınız.",
+  kullanım: "uyar [@kullanıcı] [sebep]"
+};
